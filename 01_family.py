@@ -209,22 +209,28 @@ class Cat:
 # отличия от взрослых - кушает максимум 10 единиц еды,
 # степень счастья  - не меняется, всегда ==100 ;)
 
-# class Child:
-#
-#     def __init__(self):
-#         pass
-#
-#     def __str__(self):
-#         return super().__str__()
-#
-#     def act(self):
-#         pass
-#
-#     def eat(self):
-#         pass
-#
-#     def sleep(self):
-#         pass
+class Child(Man):
+    def __str__(self):
+        return Fore.GREEN + f'{self.__class__.__name__} {self.name}, сытость {self.fullness} счастье {self.happy}'
+    def eat(self):
+        if self.house.food<10:
+            print(Fore.RED+ 'Недостаточно детской еды')
+        else:
+            print(f'Ребенок {self.name} поел')
+            self.fullness+=10
+            self.house.food-=10
+
+    def sleep(self):
+        print(Fore.MAGENTA+f'Ребенок {self.name} спит')
+        self.fullness-=5
+
+    def act(self):
+        if self.fullness<=15:
+            self.eat()
+        else:
+            self.sleep()
+
+
 
 
 # TODO после реализации второй части - отдать на проверку учителем две ветки
@@ -237,22 +243,22 @@ class Cat:
 # отправить на проверку учителем.
 
 
-# home = House()
-# serge = Husband(name='Сережа')
-# masha = Wife(name='Маша')
-# kolya = Child(name='Коля')
+home = House()
+serge = Husband(name='Сережа', house=home)
+masha = Wife(name='Маша', house=home)
+kolya = Child(name='Коля', house=home)
 # murzik = Cat(name='Мурзик')
 #
-# for day in range(365):
-#     cprint('================== День {} =================='.format(day), color='red')
-#     serge.act()
-#     masha.act()
-#     kolya.act()
-#     murzik.act()
-#     cprint(serge, color='cyan')
-#     cprint(masha, color='cyan')
-#     cprint(kolya, color='cyan')
-#     cprint(murzik, color='cyan')
+for day in range(365):
+    print('================== День {} =================='.format(day))
+    serge.act()
+    masha.act()
+    kolya.act()
+    # murzik.act()
+    print(serge)
+    print(masha)
+    print(kolya)
+    # print(murzik, color='cyan')
 
 
 # Усложненное задание (делать по желанию)

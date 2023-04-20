@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import random
 
 from colorama import Fore
 from random import randint
@@ -59,12 +60,16 @@ class Man:
             self.fullness+=30
             self.house.food-=30
             Man.eat_food+=30
+    def touch_cat(self):
+        print(f'{self.name} гладит кота')
+        self.happy+=10
 
 class House:
     def __init__(self):
         self.money=100
         self.food=50
         self.dirt=0
+        self.cat_food=30
     def __str__(self):
         return Fore.GREEN+ f'{self.__class__.__name__} Количество денег {self.money}, количество еды {self.food}, грязь {self.dirt}'
 
@@ -92,6 +97,8 @@ class Husband(Man):
             self.happy-=10
         elif self.happy<=100:
             self.gaming()
+        else:
+            self.touch_cat()
 
 
 
@@ -106,6 +113,14 @@ class Wife(Man):
             self.fullness-=10
             self.house.food+=32
             self.house.money-=32
+    def shopping_cat(self):
+        if self.house.money<32:
+            print(Fore.RED+ f'Недостаточно денег')
+        else:
+            print(Fore.BLUE+f'{self.name} купила еды коту')
+            self.fullness -= 10
+            self.house.cat_food += 32
+            self.house.money -= 32
 
     def buy_fur_coat(self):
         if self.house.money<350:
@@ -127,33 +142,24 @@ class Wife(Man):
             self.eat()
         elif self.house.food<62:
             self.shopping()
+        elif self.house.cat_food<32:
+            self.shopping_cat()
         elif self.house.dirt>=90:
             self.happy-=10
             self.clean_house()
+        elif self.happy<10:
+            self.touch_cat()
         elif self.house.money>=350 and self.happy<=30:
             self.buy_fur_coat()
 
 
 
 
-home = House()
-serge = Husband(name='Сережа', house=home)
-masha = Wife(name='Маша', house=home)
 
-for day in range(365):
-    print(Fore.YELLOW+'================== День {} =================='.format(day))
-    if serge.happy<=0 or serge.fullness<=0 or masha.happy<=0 or masha.fullness<=0:
-        print(Fore.RED+ 'умер')
-        break
-    home.dirt+=10
-    serge.act()
-    masha.act()
-    print(serge)
-    print(masha)
-    print(home)
-print(f'Заработано денег {Man.salery_money}, сьедено еды {Man.eat_food}, куплено шуб {Man.coats}')
 
-# TODO после реализации первой части - отдать на проверку учителю
+
+
+
 
 ######################################################## Часть вторая
 #
@@ -181,21 +187,60 @@ print(f'Заработано денег {Man.salery_money}, сьедено ед�
 
 
 class Cat:
-
-    def __init__(self):
-        pass
-
-    def act(self):
-        pass
-
+    def __init__(self, name, house):
+        self.name = name
+        self.house=house
+        self.fullness=30
+    def __str__(self):
+        return f'{self.__class__.__name__}, имя {self.name}, сыотость {self.fullness}'
     def eat(self):
-        pass
-
+        if self.house.cat_food<10:
+            print('Нет кошачей еды')
+        else:
+            print(f'кот {self.name} поел')
+            self.house.cat_food-=10
+            self.fullness+=20
     def sleep(self):
-        pass
+        print(f'кот {self.name} спит')
+        self.fullness-=10
 
     def soil(self):
-        pass
+        print(f'Кот {self.name} дерет обои')
+        self.house.dirt+=5
+        self.fullness-=10
+
+    def act(self):
+        choice1=self.sleep
+        choice2=self.soil
+        list_choices=[choice1, choice2]
+        choice=random.choice(list_choices)
+        if self.fullness<=15:
+            self.eat()
+        else:
+            choice()
+
+
+home = House()
+serge = Husband(name='Сережа', house=home)
+masha = Wife(name='Маша', house=home)
+cat= Cat('Adolf', home)
+for day in range(365):
+    print(Fore.YELLOW+'================== День {} =================='.format(day))
+    if serge.happy<=0 or serge.fullness<=0 or masha.happy<=0 or masha.fullness<=0 or cat.fullness<=0:
+        print(Fore.RED+ 'умер')
+        break
+    home.dirt+=10
+    serge.act()
+    masha.act()
+    cat.act()
+    print(serge)
+    print(masha)
+    print(home)
+    print(cat)
+print(f'Заработано денег {Man.salery_money}, сьедено еды {Man.eat_food}, куплено шуб {Man.coats}')
+
+
+
 
 
 ######################################################## Часть вторая бис
